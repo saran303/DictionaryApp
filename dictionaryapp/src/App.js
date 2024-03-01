@@ -1,58 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
-import { useEffect, useState } from 'react';
+import { useState } from "react";
+import { useEffect } from "react";
 
-const customDictionary = 
-[
+export default function App() {
+  const [iniData, setIniData] = useState([]);
+  const [meaning, setMeaning] = useState("");
 
-    { word: "React", 
-      meaning: "A JavaScript library for building user interfaces." 
+  const data = [
+    {
+      word: "React",
+      meaning: "A JavaScript library for building user interfaces.",
     },
+    { word: "Component", meaning: "A reusable building block in React." },
+    { word: "State", meaning: "An object that stores data for a component." },
+  ];
 
-    { word: "Component", 
-      meaning: "A reusable building block in React." 
-    },
-
-    { word: "State", 
-      meaning: "An object that stores data for a component." 
-    }
-
-]
-// console.log(customDictionary[1].word)
-// console.log(customDictionary[1].meaning)
-function App() {
-  const[input, setinput] = useState("");
-  const[result, setResult] = useState("");
-  const[isClicked, setIsClicked] = useState(false)
-  // console.log(input)
-  
-  const checkChange = () => {
-    for(let i = 0; i<customDictionary.length; i++){
-      let currentWord = customDictionary[i].word.toLowerCase();
-      if(input == currentWord){
-        console.log(customDictionary[1].meaning)
-        setResult(customDictionary[i].meaning);
-        return
+  const findWord = (word) => {
+    let meaning = "";
+    iniData.forEach((w) => {
+      if (w.word.toLowerCase() === word) {
+        meaning = w.meaning;
       }
-      else{
-        setResult("Word not found in the dictionary.");
-      }
-    }
-  }
-  useEffect(() =>{
-    checkChange();
-    // setIsClicked(!isClicked)
-  },[isClicked])
+    });
 
+    if (meaning === "") {
+      meaning = "Word not found in the dictionary.";
+    }
+    setMeaning(meaning);
+  };
+
+  useEffect(() => {
+    setIniData(data);
+  }, []);
   return (
-    <div className="App">
+    <div>
       <h1>Dictionary App</h1>
-      <input type='text' placeholder="Search for a word..." onChange={(e) => setinput(e.target.value.toLowerCase())}></input>
-      <button onClick={(e) => {e.preventDefault(); setIsClicked(!isClicked)}}>Search</button>
-      <h4>Definition:</h4>
-      {isClicked && <p>{result}</p>}
+      <form
+        onSubmit={(e) => (
+          e.preventDefault(), findWord(e.target.word.value.toLowerCase())
+        )}
+      >
+        <input name="word" type="text" placeholder="Search for a word" />
+        <button type="submit">Search</button>
+      </form>
+      <div style={{ fontWeight: "bold" }}>Definition:</div>
+      <div style={{ marginTop: "20px", marginBottom: "20px" }}>{meaning}</div>
     </div>
   );
 }
-
-export default App;
